@@ -69,8 +69,10 @@
             <h1 class='text-3xl font-bold'>AI Blog Generator</h1>
         </div>
         <div>
-            <a href='#' class="text-white hover:underline">Logout</a>
-        </div>
+          <a href="#" class="text-white hover:underline mx-4">Welcome {{user.username}}</a>
+          <a href='/blog-list' class="text-white hover:underline mx-4">Saved Blog Posts</a>
+          <a href='/logout' class="text-white hover:underline">Logout</a>
+      </div>
     </nav>
 
 
@@ -93,19 +95,6 @@
                     <button id='generatedBlogButton' class='bg-green-600 text-white px-4 py-2 rounded-r-md hover:bg-green-700 transition-colors'>Generate</button>
                 </div>
             </div>
-            <!-- Section for loading Circle class="load" -->
-            <div id="loading-circle" class="center" style="display:none">
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-                <div class="wave"></div>
-            </div>
             <!-- Generated Blog display Section -->
             <section class='mt-10 flex-grow'>
                 <h2 class='text-xl mb-4 font-semibold'>Generated Blog Article</h2>
@@ -114,11 +103,64 @@
                 </div>
             </section>
 
+            <!-- Section for loading Circle class="load" -->
+            <div id="loading-circle" class="center" style="display:none">
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+              <div class="wave"></div>
+          </div>
+
         </div>
     </div>
     <footer class='text-center p-4 text-black mt-6'>
         Powered by Robel
     </footer>
+
+    <script>
+      document.getElementById('generatedBlogButton').addEventListener('click', async () => {
+        const youtubeLink = document.getElementById('youtubeLink').value;
+        const loading_circle = document.getElementById('loading-circle');
+        const loadingIndicator = document.getElementById('loading');
+        const blogContent = document.getElementById('blogContent');
+        const endpointUrl = '/generate-blog';
+
+        if (youtubeLink){
+          loading_circle.style.display = 'flex';
+          blogContent.innerHTML = ''
+
+          try{
+            const response = await fetch(endpointUrl, {
+              method: 'POST',
+              headers: {'Content-Type':'application/json'},
+              body: JSON.stringify({ 'link': youtubeLink })
+            });
+
+            const data = await response.json();
+
+            blogContent.innerHTML = data.content;
+            loading_circle.style.display = 'none';
+          } catch (error){
+            console.error("Error occurred:", error);
+            alert("something went wrong. Please try again later.");
+            loading_circle.style.display = 'none';
+          }
+          
+        } else {
+          alert("Please Enter a Youtube Link");
+        }
+         
+
+
+
+      })
+    </script>
 
 </body>
 </html>
